@@ -1,4 +1,4 @@
-package fredriksthlm.cordova.notifications;
+package fredriksthlm.cordova.firebase;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
