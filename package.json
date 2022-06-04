@@ -8,10 +8,7 @@
       "android"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/fredriksthlm/cordova-plugin-fcmlight.git"
-  },
+  "repository": "github:fredriksthlm/cordova-plugin-fcmlight",
   "author": "fredriksthlm",
   "license": "MIT",
   "bugs": "https://github.com/fredriksthlm/cordova-plugin-fcmlight/issues",
