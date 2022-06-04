@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-fcmlight",
-  "version": "7",
+  "version": "7.0.0",
   "description": "Cordova plugin for Firebase Messaging - lightweight",
   "cordova": {
     "id": "cordova-plugin-fcmlight",
