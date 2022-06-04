@@ -12,13 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/fredriksthlm/cordova-plugin-fcmlight.git"
   },
-  "author": "...",
+  "author": "fredriksthlm",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fredriksthlm/cordova-plugin-fcmlight/issues"
-  },
-  "homepage": "https://github.com/fredriksthlm/cordova-plugin-fcmlight#readme",
-  "funding": "https://github.com/chemerisuk/cordova-plugin-firebase-messaging?sponsor=1",
+  "bugs": "https://github.com/fredriksthlm/cordova-plugin-fcmlight/issues",
   "keywords": [
     "cordova",
     "firebase",
@@ -29,7 +25,7 @@
     "cordova-android"
   ],
   "scripts": {
-    "version": "perl -p -i -e 's/(version=)\"\\d+\\.\\d+\\.\\d+\"/$1\"'$npm_package_version'\"$2/' plugin.xml && git add plugin.xml",
-    "postversion": "git push && git push --tags"
+    "test": "npm run lint",
+    "lint": "eslint ."
   }
 }
