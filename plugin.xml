@@ -20,24 +20,20 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </engines>
 
     <platform name="android">
-        <preference name="ANDROID_FIREBASE_MESSAGING_VERSION" default="23.0.5"/>
-
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebaseMessaging">
-                <param name="android-package" value="fredriksthlm.cordova.firebase.FirebaseMessagingPlugin" />
+                <param name="android-package" value="com.fredriksthlm.cordova.firebase.FirebaseMessagingPlugin" />
                 <param name="onload" value="true" />
             </feature>
         </config-file>
 
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
-           <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="default" />
            <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_ic_notification" />
            <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/mycolor" />
         </config-file>
 
-        <framework src="com.google.firebase:firebase-messaging:$ANDROID_FIREBASE_MESSAGING_VERSION" />
-        <source-file src="src/android/FirebaseMessagingPlugin.java"
-            target-dir="src/fredriksthlm/cordova/firebase/" />
+        <framework src="com.google.firebase:firebase-messaging:23.0.5" />
+        <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/com/fredriksthlm/cordova/firebase/" />
     </platform>
 
 </plugin>
