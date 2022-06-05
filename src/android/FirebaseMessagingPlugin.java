@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class FirebaseMEssagingPlugin extends CordovaPlugin {
+public class FirebaseMessagingPlugin extends CordovaPlugin {
 
     private NotificationManager notificationManager;
     private FirebaseMessaging firebaseMessaging;
