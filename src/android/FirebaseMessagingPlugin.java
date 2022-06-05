@@ -1,4 +1,4 @@
-package fredriksthlm.cordova.firebase;
+package com.fredriksthlm.cordova.firebase;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,7 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class AndroidNotifications extends CordovaPlugin {
+public class FirebaseMEssagingPlugin extends CordovaPlugin {
 
     private NotificationManager notificationManager;
     private FirebaseMessaging firebaseMessaging;
