@@ -27,15 +27,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             </feature>
         </config-file>
 
-        <config-file target="AndroidManifest.xml" parent="/manifest/application">
-           <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_ic_notification" />
-           <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/mycolor" />
-        </config-file>
 
         <dependency id="cordova-support-android-plugin" />
                
         <framework src="com.google.firebase:firebase-messaging:23.0.5" />
-        <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/com/fredriksthlm/cordova/firebase/" />
+        <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/by/chemerisuk/cordova/firebase/" />
     </platform>
 
 </plugin>
