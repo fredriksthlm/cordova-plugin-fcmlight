@@ -23,7 +23,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
               
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebaseMessaging">
-                <param name="android-package" value="com.fredriksthlm.cordova.firebase.FirebaseMessagingPlugin" />
+                <param name="android-package" value="by.chemerisuk.cordova.firebase.FirebaseMessagingPlugin" />
                 <param name="onload" value="true" />
             </feature>
         </config-file>
