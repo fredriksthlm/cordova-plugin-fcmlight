@@ -1,8 +1,10 @@
 # Cordova plugin for [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
-[![NPM version][npm-version]][npm-url] [![NPM downloads][npm-downloads]][npm-url] [![NPM total downloads][npm-total-downloads]][npm-url] [![PayPal donate](https://img.shields.io/badge/paypal-donate-ff69b4?logo=paypal)][donate-url] [![Twitter][twitter-follow]][twitter-url]
 
-| [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)][donate-url] | Your help is appreciated. Create a PR, submit a bug or just grab me :beer: |
-|-|-|
+This is a fork of https://github.com/chemerisuk/cordova-plugin-firebase-messaging
+
+So visit Chemerisuk for hints.
+I've forked it to remove some libraries and scripts that I don't want to use. (The old badger thing, the Android Core and the full MessagingService is removed etc).
+Google Analytics will also not automatically be installed.
 
 ## Index
 
@@ -19,48 +21,18 @@
 
 ## Supported platforms
 
-- iOS
 - Android
 
 ## Installation
 
-    $ cordova plugin add cordova-plugin-firebase-messaging
+    $ cordova plugin add https://github.com/fredriksthlm/cordova-plugin-fcmlight
 
-If you get an error about CocoaPods being unable to find compatible versions, run
-    
-    $ pod repo update
+## Adding configuration file
 
-Use variables `IOS_FIREBASE_POD_VERSION`, `ANDROID_FIREBASE_MESSAGING_VERSION` and `ANDROIDX_CORE_VERSION` to override dependency versions on Android:
+The google-services.json file must be placed in the app folder of the project, before building.
 
-    $ cordova plugin add cordova-plugin-firebase-messaging --variable IOS_FIREBASE_POD_VERSION="~> 8.8.0" --variable ANDROID_FIREBASE_MESSAGING_VERSION="22.0.+" --variable ANDROIDX_CORE_VERSION="1.6.+"
-
-## Adding configuration files
-
-Cordova supports `resource-file` tag for easy copying resources files. Firebase SDK requires `google-services.json` on Android and `GoogleService-Info.plist` on iOS platforms.
-
-1. Put `google-services.json` and/or `GoogleService-Info.plist` into the root directory of your Cordova project
-2. Add new tag for Android platform
-
-```xml
-<platform name="android">
-    ...
-    <resource-file src="google-services.json" target="app/google-services.json" />
-</platform>
-...
-<platform name="ios">
-    ...
-    <resource-file src="GoogleService-Info.plist" />
-</platform>
-```
-
-This way config files will be copied on `cordova prepare` step.
 
 ## Methods
-In general (for both platforms) you can only rely on custom data fields from a FCM payload.
-
-For iOS APNS payload is stored in `aps` object. It's available when a message arrives in both foreground and background.
-
-For Android GCM payload is stored in `gcm`. It's available ONLY when a message arrives in foreground. For a some reason Google applied this limitation into their APIs. Anyway I've created [an issue](https://github.com/chemerisuk/cordova-plugin-firebase-messaging/issues/2) for a future improvement.
 
 ### onMessage(_callback_)
 Called when a push message received while app is in foreground.
@@ -69,7 +41,6 @@ cordova.plugins.firebase.messaging.onMessage(function(payload) {
     console.log("New foreground FCM message: ", payload);
 });
 ```
-NOTE: on iOS make sure notification payload contains key `content-available` with value `1`. Otherwise this callback is never fired.
 
 ### onBackgroundMessage(_callback_)
 Called when a push message received while app is in background.
@@ -78,33 +49,13 @@ cordova.plugins.firebase.messaging.onBackgroundMessage(function(payload) {
     console.log("New background FCM message: ", payload);
 });
 ```
-NOTE: on iOS make sure notification payload contains key `content-available` with value `1` (or [option `contentAvailable`](https://firebase.google.com/docs/reference/admin/node/firebase-admin.messaging.messagingoptions.md#messagingoptionscontentavailable) to `true` if you are using firebase admin SDK). Otherwise this callback is never fired.
 
-### requestPermission(_options_)
-Grant permission to recieve push notifications (will trigger prompt on iOS).
-```js
-cordova.plugins.firebase.messaging.requestPermission().then(function() {
-    console.log("Push messaging is allowed");
-});
-```
-In `options` object you can specify a boolean setting `forceShow`. When `true` this setting forces notification to display even when app is in foreground:
-```js
-cordova.plugins.firebase.messaging.requestPermission({forceShow: true}).then(function() {
-    console.log("You'll get foreground notifications when a push message arrives");
-});
-```
 
 ### getToken(_type_)
 Returns a promise that fulfills with the current FCM token.
 ```js
 cordova.plugins.firebase.messaging.getToken().then(function(token) {
     console.log("Got device token: ", token);
-});
-```
-This method also accepts optional argument `type`. Currently iOS platform supports values `"apns-buffer"` and `"apns-string"` that defines presentation of resolved APNS token:
-```js
-cordova.plugins.firebase.messaging.getToken("apns-string").then(function(token) {
-    console.log("APNS hex device token: ", token);
 });
 ```
 
@@ -135,31 +86,7 @@ cordova.plugins.firebase.messaging.onTokenRefresh(function() {
 
 Use this callback to get initial token and to refresh stored value in future.
 
-### subscribe(_topic_)
-Subscribe to a topic in background.
-```js
-cordova.plugins.firebase.messaging.subscribe("New Topic");
-```
 
-### unsubscribe(_topic_)
-Unsubscribe from a topic in background.
-```js
-cordova.plugins.firebase.messaging.unsubscribe("New Topic");
-```
-
-### getBadge
-Reads current badge number (if supported).
-```js
-cordova.plugins.firebase.messaging.getBadge().then(function(value) {
-    console.log("Badge value: ", value);
-});
-```
-
-### setBadge(_value_)
-Sets current badge number (if supported).
-```js
-cordova.plugins.firebase.messaging.setBadge(value);
-```
 
 ## Notification channels on Android 8+
 Starting in Android 8.0 (API level 26), all notifications must be assigned to a channel or it will not appear. By categorizing notifications into channels, users can disable specific notification channels for your app (instead of disabling all your notifications), and users can control the visual and auditory options for each channel—all from the Android system settings.
@@ -185,8 +112,6 @@ cordova.plugins.firebase.messaging.createChannel({
 | `importance` | `Integer` | The importance of the channel. This controls how interruptive notifications posted to this channel are. The importance property goes from 1 = Lowest, 2 = Low, 3 = Normal, 4 = High and 5 = Highest. |
 | `sound` | `String` | The name of the sound file to be played upon receipt of the notification in this channel. Cannot be changed after channel is created. |
 | `badge` | `Boolean` | Sets whether notifications posted to this channel can appear as application icon badges in a Launcher. |
-| `light` | `Boolean` | Sets whether notifications posted to this channel should display notification lights, on devices that support that feature. |
-| `lightColor` | `Integer` | Sets the notification light color #RGBA for notifications posted to this channel. |
 | `vibration` | `Boolean` or `Array` | Sets whether notification posted to this channel should vibrate. Pass array value instead of a boolean to set a vibration pattern. |
  
 ### findChannel(_channelId_)
@@ -233,10 +158,12 @@ You can also define what color is used with your notification. Different android
 </config-file>
 ```
 
-[npm-url]: https://www.npmjs.com/package/cordova-plugin-firebase-messaging
-[npm-version]: https://img.shields.io/npm/v/cordova-plugin-firebase-messaging.svg
-[npm-downloads]: https://img.shields.io/npm/dm/cordova-plugin-firebase-messaging.svg
-[npm-total-downloads]: https://img.shields.io/npm/dt/cordova-plugin-firebase-messaging.svg?label=total+downloads
-[twitter-url]: https://twitter.com/chemerisuk
-[twitter-follow]: https://img.shields.io/twitter/follow/chemerisuk.svg?style=social&label=Follow%20me
-[donate-url]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6HLVTJDGQQ6EY&source=url
+### Set custom default notification channel
+You can also define a default notification channel. 
+```xml
+<config-file parent="/manifest/application" target="app/src/main/AndroidManifest.xml">
+<meta-data
+    android:name="com.google.firebase.messaging.default_notification_channel_id"
+    android:value="@string/default_notification_channel_id" />
+</config-file>
+```
