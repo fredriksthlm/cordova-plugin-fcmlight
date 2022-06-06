@@ -32,6 +32,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
            <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/mycolor" />
         </config-file>
 
+        <dependency id="cordova-support-android-plugin" />
+               
         <framework src="com.google.firebase:firebase-messaging:23.0.5" />
         <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/com/fredriksthlm/cordova/firebase/" />
     </platform>
