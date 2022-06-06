@@ -3,9 +3,7 @@ package by.chemerisuk.cordova.firebase;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
@@ -13,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
@@ -55,27 +52,6 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
         lastBundle = getNotificationData(cordova.getActivity().getIntent());
     }
 
-    @CordovaMethod
-    private void subscribe(String topic, final CallbackContext callbackContext) {
-        firebaseMessaging.subscribeToTopic(topic).addOnCompleteListener(cordova.getActivity(), task -> {
-            if (task.isSuccessful()) {
-                callbackContext.success();
-            } else {
-                callbackContext.error(task.getException().getMessage());
-            }
-        });
-    }
-
-    @CordovaMethod
-    private void unsubscribe(String topic, final CallbackContext callbackContext) {
-        firebaseMessaging.unsubscribeFromTopic(topic).addOnCompleteListener(cordova.getActivity(), task -> {
-            if (task.isSuccessful()) {
-                callbackContext.success();
-            } else {
-                callbackContext.error(task.getException().getMessage());
-            }
-        });
-    }
 
     @CordovaMethod
     private void clearNotifications(CallbackContext callbackContext) {
@@ -84,16 +60,6 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
         callbackContext.success();
     }
 
-    @CordovaMethod
-    private void deleteToken(CallbackContext callbackContext) {
-        firebaseMessaging.deleteToken().addOnCompleteListener(cordova.getActivity(), task -> {
-            if (task.isSuccessful()) {
-                callbackContext.success();
-            } else {
-                callbackContext.error(task.getException().getMessage());
-            }
-        });
-    }
 
     @CordovaMethod
     private void getToken(String type, final CallbackContext callbackContext) {
@@ -132,26 +98,6 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
     }
 
 
-
-    @CordovaMethod
-    private void getBadge(CallbackContext callbackContext) {
-        Context context = cordova.getActivity();
-        SharedPreferences settings = context.getSharedPreferences("badge", Context.MODE_PRIVATE);
-        callbackContext.success(settings.getInt("badge", 0));
-    }
-
-    @CordovaMethod
-    private void requestPermission(JSONObject options, CallbackContext callbackContext) {
-        Context context = cordova.getActivity().getApplicationContext();
-
-        this.forceShow = options.optBoolean("forceShow");
-
-        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-            callbackContext.success();
-        } else {
-            callbackContext.error("Notifications permission is not granted");
-        }
-    }
 
     @CordovaMethod
     private void createChannel(JSONObject options, CallbackContext callbackContext) throws JSONException {
@@ -197,19 +143,6 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
         callbackContext.success();
     }
 
-    @CordovaMethod
-    private void findChannel(String channelId, CallbackContext callbackContext) throws JSONException {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            throw new UnsupportedOperationException("Notification channels are not supported");
-        }
-
-        NotificationChannel channel = notificationManager.getNotificationChannel(channelId);
-        if (channel == null) {
-            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, (String)null));
-        } else {
-            callbackContext.success(toJSON(channel));
-        }
-    }
 
     @CordovaMethod
     private void listChannels(CallbackContext callbackContext) throws JSONException {
@@ -255,25 +188,8 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
         this.isBackground = false;
     }
 
-    static void sendNotification(RemoteMessage remoteMessage) {
-        JSONObject notificationData = new JSONObject(remoteMessage.getData());
-        RemoteMessage.Notification notification = remoteMessage.getNotification();
-        try {
-            if (notification != null) {
-                notificationData.put("gcm", toJSON(notification));
-            }
-            notificationData.put("google.message_id", remoteMessage.getMessageId());
-            notificationData.put("google.sent_time", remoteMessage.getSentTime());
 
-            if (instance != null) {
-                CallbackContext callbackContext = instance.isBackground ?
-                        instance.backgroundCallback : instance.foregroundCallback;
-                instance.sendNotification(notificationData, callbackContext);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "sendNotification", e);
-        }
-    }
+
 
     static void sendToken(String instanceId) {
         if (instance != null) {
