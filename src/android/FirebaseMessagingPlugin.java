@@ -1,10 +1,11 @@
-package com.fredriksthlm.cordova.firebase;
+package by.chemerisuk.cordova.firebase;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
-
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
@@ -132,7 +134,30 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
 
 
     @CordovaMethod
+    private void getBadge(CallbackContext callbackContext) {
+        Context context = cordova.getActivity();
+        SharedPreferences settings = context.getSharedPreferences("badge", Context.MODE_PRIVATE);
+        callbackContext.success(settings.getInt("badge", 0));
+    }
+
+    @CordovaMethod
+    private void requestPermission(JSONObject options, CallbackContext callbackContext) {
+        Context context = cordova.getActivity().getApplicationContext();
+
+        this.forceShow = options.optBoolean("forceShow");
+
+        if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+            callbackContext.success();
+        } else {
+            callbackContext.error("Notifications permission is not granted");
+        }
+    }
+
+    @CordovaMethod
     private void createChannel(JSONObject options, CallbackContext callbackContext) throws JSONException {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            throw new UnsupportedOperationException("Notification channels are not supported");
+        }
 
         String channelId = options.getString("id");
         String channelName = options.getString("name");
@@ -172,9 +197,25 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
         callbackContext.success();
     }
 
+    @CordovaMethod
+    private void findChannel(String channelId, CallbackContext callbackContext) throws JSONException {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            throw new UnsupportedOperationException("Notification channels are not supported");
+        }
+
+        NotificationChannel channel = notificationManager.getNotificationChannel(channelId);
+        if (channel == null) {
+            callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, (String)null));
+        } else {
+            callbackContext.success(toJSON(channel));
+        }
+    }
 
     @CordovaMethod
     private void listChannels(CallbackContext callbackContext) throws JSONException {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            throw new UnsupportedOperationException("Notification channels are not supported");
+        }
 
         List<NotificationChannel> channels = notificationManager.getNotificationChannels();
         JSONArray result = new JSONArray();
@@ -187,6 +228,9 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
 
     @CordovaMethod
     private void deleteChannel(String channelId, CallbackContext callbackContext) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            throw new UnsupportedOperationException("Notification channels are not supported");
+        }
 
         notificationManager.deleteNotificationChannel(channelId);
 
