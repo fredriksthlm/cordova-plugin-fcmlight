@@ -31,13 +31,13 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="config.xml" parent="/*">
             <preference name="AndroidXEnabled" value="true" />
             <preference name="GradlePluginGoogleServicesEnabled" value="true" />
-            <preference name="GradlePluginGoogleServicesVersion" value="4.3.10" />
+            <preference name="GradlePluginGoogleServicesVersion" value="4.3.13" />
         </config-file>
 
 
         <dependency id="cordova-support-android-plugin" />
                
-        <framework src="com.google.firebase:firebase-messaging:23.0.5" />
+        <framework src="com.google.firebase:firebase-messaging:23.0.7" />
         <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/by/chemerisuk/cordova/firebase/" />
     </platform>
 
