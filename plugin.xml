@@ -15,12 +15,50 @@ xmlns:android="http://schemas.android.com/apk/res/android"
     </js-module>
 
     <engines>
-        <engine name="cordova" version=">=10.0.0"/>
-        <engine name="cordova-android" version=">=10.0.0"/>
+        <engine name="cordova" version=">=11.0.0"/>
+        <engine name="cordova-android" version=">=11.0.0"/>
+        <engine name="cordova-ios" version=">=6.0.0"/>
     </engines>
 
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="FirebaseMessaging">
+                <param name="ios-package" value="FirebaseMessagingPlugin" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+                <string>remote-notification</string>
+            </array>
+        </config-file>
+        <config-file target="*-Debug.plist" parent="aps-environment">
+            <string>development</string>
+        </config-file>
+        <config-file target="*-Release.plist" parent="aps-environment">
+            <string>production</string>
+        </config-file>
+
+        <header-file src="src/ios/AppDelegate+FirebaseMessagingPlugin.h" />
+        <source-file src="src/ios/AppDelegate+FirebaseMessagingPlugin.m" />
+        <header-file src="src/ios/FirebaseMessagingPlugin.h" />
+        <source-file src="src/ios/FirebaseMessagingPlugin.m" />
+
+        <podspec>
+            <config>
+                <source url="https://cdn.cocoapods.org/"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="Firebase/Messaging" spec="9.3.0" />
+            </pods>
+        </podspec>
+    </platform>
+           
+           
+           
+           
     <platform name="android">
-              
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="FirebaseMessaging">
                 <param name="android-package" value="by.chemerisuk.cordova.firebase.FirebaseMessagingPlugin" />
@@ -31,7 +69,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="config.xml" parent="/*">
             <preference name="AndroidXEnabled" value="true" />
             <preference name="GradlePluginGoogleServicesEnabled" value="true" />
-            <preference name="GradlePluginGoogleServicesVersion" value="4.3.13" />
+            <preference name="GradlePluginGoogleServicesVersion" value="4.3.14" />
         </config-file>
 
 
