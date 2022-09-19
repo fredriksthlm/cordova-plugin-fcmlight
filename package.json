@@ -5,6 +5,7 @@
   "cordova": {
     "id": "cordova-plugin-fcmlight",
     "platforms": [
+      "ios",
       "android"
     ]
   },
