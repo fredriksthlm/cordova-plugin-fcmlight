@@ -31,6 +31,14 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <config-file target="*-Info.plist" parent="UIBackgroundModes">
             <array>
                 <string>remote-notification</string>
+                <string>fetch</string>
+                <string>audio</string>
+                <string>processing</string>
+            </array>
+        </config-file>
+                <config-file target="*-Info.plist" parent="BGTaskSchedulerPermittedIdentifiers">
+            <array>
+                <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
             </array>
         </config-file>
         <config-file target="*-Debug.plist" parent="aps-environment">
@@ -50,7 +58,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="Firebase/Messaging" spec="9.3.0" />
+                <pod name="FirebaseMessaging" spec="10.0.0" />
             </pods>
         </podspec>
     </platform>
