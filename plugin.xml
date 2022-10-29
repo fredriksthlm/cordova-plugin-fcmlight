@@ -32,7 +32,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
             <array>
                 <string>remote-notification</string>
                 <string>fetch</string>
-                <string>audio</string>
                 <string>processing</string>
             </array>
         </config-file>
