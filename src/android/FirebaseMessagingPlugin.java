@@ -23,10 +23,12 @@ import org.json.JSONObject;
 import java.util.Set;
 
 import by.chemerisuk.cordova.support.CordovaMethod;
+import by.chemerisuk.cordova.support.ExecutionThread;
 import by.chemerisuk.cordova.support.ReflectiveCordovaPlugin;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 import static com.google.android.gms.tasks.Tasks.await;
+import static by.chemerisuk.cordova.support.ExecutionThread.WORKER;
 
 
 public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
@@ -58,7 +60,7 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
     }
 
 
-    @CordovaMethod
+    @CordovaMethod(WORKER)
     private void getToken(CordovaArgs args, CallbackContext callbackContext) throws Exception {
         String type = args.getString(0);
         if (!type.isEmpty()) {
@@ -90,7 +92,7 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
     }
 
 
-    @CordovaMethod
+    @CordovaMethod(WORKER)
     private void createChannel(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             JSONObject options = args.getJSONObject(0);
