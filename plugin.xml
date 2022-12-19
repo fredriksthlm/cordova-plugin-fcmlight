@@ -57,7 +57,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <source url="https://cdn.cocoapods.org/"/>
             </config>
             <pods use-frameworks="true">
-                <pod name="FirebaseMessaging" spec="10.1.0" />
+                <pod name="FirebaseMessaging" spec="10.3.0" />
             </pods>
         </podspec>
     </platform>
@@ -82,7 +82,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <dependency id="cordova-support-android-plugin" />
                
-        <framework src="com.google.firebase:firebase-messaging:23.1.0" />
+        <framework src="com.google.firebase:firebase-messaging:23.1.1" />
         <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/by/chemerisuk/cordova/firebase/" />
     </platform>
 
