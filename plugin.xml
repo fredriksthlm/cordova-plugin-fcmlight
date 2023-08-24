@@ -83,7 +83,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 
         <dependency id="cordova-support-android-plugin" />
                
-        <framework src="com.google.firebase:firebase-messaging:23.1.2" />
+        <framework src="com.google.firebase:firebase-messaging:23.2.1" />
         <framework src="com.google.firebase:firebase-analytics:21.3.0" />
         <source-file src="src/android/FirebaseMessagingPlugin.java" target-dir="src/by/chemerisuk/cordova/firebase/" />
     </platform>
