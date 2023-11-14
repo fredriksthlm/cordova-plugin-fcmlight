@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
@@ -19,13 +20,11 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
+import org.apache.cordova.PermissionHelper;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
 
 import java.util.Set;
 
@@ -149,41 +148,29 @@ public class FirebaseMessagingPlugin extends ReflectiveCordovaPlugin {
 
     @CordovaMethod
     private void requestPermission(CordovaArgs args, CallbackContext callbackContext) throws JSONException {
-        CordovaPlugin plugin = this;
         JSONObject options = args.getJSONObject(0);
         Context context = cordova.getActivity().getApplicationContext();
         forceShow = options.optBoolean("forceShow");
         if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             callbackContext.success();
+        } else if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissionCallback = callbackContext;
+            PermissionHelper.requestPermission(this, 0, Manifest.permission.POST_NOTIFICATIONS);
         } else {
-            try {
-                if (Build.VERSION.SDK_INT >= 33) {
-                    if (cordova.hasPermission(Manifest.permission.POST_NOTIFICATIONS))
-                        return;
-                    requestPermissionCallback = callbackContext;
-                    String[] permissions = new String[]{"android.permission.POST_NOTIFICATIONS"};
-                    requestPermissions(plugin, 1, permissions);
+            callbackContext.error("Notifications permission is not granted");
+        }
+    }
 
-
-
-                } else {
-                    callbackContext.error("Notifications permission is not granted");
-                }
-            } catch (Exception e) {
-                callbackContext.error("Notifications permission is not granted");
+    @Override
+    public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+        for (int result : grantResults) {
+            if (result == PackageManager.PERMISSION_DENIED) {
+                requestPermissionCallback.error("Notifications permission is not granted");
+                return;
             }
         }
+        requestPermissionCallback.success();
     }
-
-    protected void requestPermissions(CordovaPlugin plugin, int requestCode, String [] permissions) throws Exception{
-        try {
-            java.lang.reflect.Method method = cordova.getClass().getMethod("requestPermissions", org.apache.cordova.CordovaPlugin.class ,int.class, java.lang.String[].class);
-            method.invoke(cordova, plugin, requestCode, permissions);
-        } catch (NoSuchMethodException e) {
-            throw new Exception("requestPermissions() method not found in CordovaInterface implementation of Cordova v" + CordovaWebView.CORDOVA_VERSION);
-        }
-    }
-
 
     @Override
     public void onNewIntent(Intent intent) {
